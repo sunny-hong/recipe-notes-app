@@ -1,0 +1,24 @@
+{
+  "name": "@recipe-notes-app/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@recipe-notes-app/db": "workspace:*",
+    "@recipe-notes-app/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@recipe-notes-app/config": "workspace:*",
+    "typescript": "^5"
+  }
+}

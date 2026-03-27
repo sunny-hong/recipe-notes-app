@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-lyra",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@recipe-notes-app/ui/components",
+    "utils": "@recipe-notes-app/ui/lib/utils",
+    "hooks": "@recipe-notes-app/ui/hooks",
+    "lib": "@recipe-notes-app/ui/lib",
+    "ui": "@recipe-notes-app/ui/components"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}

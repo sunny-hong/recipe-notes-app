@@ -1,0 +1,27 @@
+{
+  "name": "@recipe-notes-app/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@recipe-notes-app/auth": "workspace:*",
+    "@recipe-notes-app/db": "workspace:*",
+    "@recipe-notes-app/env": "workspace:*",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@recipe-notes-app/config": "workspace:*",
+    "hono": "catalog:",
+    "typescript": "^5"
+  }
+}
