@@ -1,1 +1,112 @@
 @import "@recipe-notes-app/ui/globals.css";
+
+/* Brand overrides — Helvetica Neue, warm yellow */
+:root {
+  --brand-yellow: #f5c518;
+  --brand-yellow-light: #fdf3c2;
+  --panel-bg: #f7f3ec;
+  --panel-border: #e5ddd0;
+  --header-bg: #2d2a24;
+}
+
+html,
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Tiptap editor styles */
+.ProseMirror {
+  outline: none;
+  min-height: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1a1a1a;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #b0a898;
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1.2rem 0 0.6rem;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1rem 0 0.5rem;
+}
+
+.ProseMirror h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0.8rem 0 0.4rem;
+}
+
+.ProseMirror p {
+  margin: 0.4rem 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.4rem 0;
+}
+
+.ProseMirror li {
+  margin: 0.2rem 0;
+}
+
+.ProseMirror strong {
+  font-weight: 700;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid var(--brand-yellow);
+  padding-left: 1rem;
+  margin: 0.6rem 0;
+  color: #6b6055;
+  font-style: italic;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid var(--panel-border);
+  margin: 1.2rem 0;
+}
+
+.ProseMirror code {
+  background: #f2ede4;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.ProseMirror pre {
+  background: #2d2a24;
+  color: #f7f3ec;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.ProseMirror pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}

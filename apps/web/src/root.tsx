@@ -14,7 +14,6 @@ import {
 
 import type { Route } from "./+types/root";
 import Header from "./components/header";
-import { ThemeProvider } from "./components/theme-provider";
 import { queryClient } from "./utils/trpc";
 
 export const links: Route.LinksFunction = () => [
@@ -47,18 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        disableTransitionOnChange
-        storageKey="vite-ui-theme"
-      >
-        <div className="grid grid-rows-[auto_1fr] h-svh">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-      </ThemeProvider>
+      <div className="grid grid-rows-[auto_1fr] h-svh">
+        <Header />
+        <Outlet />
+      </div>
+      <Toaster richColors />
       <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
     </QueryClientProvider>
   );

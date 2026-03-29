@@ -16,7 +16,10 @@
     "@recipe-notes-app/env": "workspace:*",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
+    "@types/pdfkit": "^0.17.5",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.2",
+    "pdfkit": "^0.18.0",
     "zod": "catalog:"
   },
   "devDependencies": {
