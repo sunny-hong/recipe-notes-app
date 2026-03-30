@@ -1,11 +1,38 @@
 import Placeholder from "@tiptap/extension-placeholder";
-import { EditorContent, useEditor } from "@tiptap/react";
+import Underline from "@tiptap/extension-underline";
+import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { trpc } from "@/utils/trpc";
+
+type ToolbarButtonProps = {
+  active: boolean;
+  onMouseDown: (e: React.MouseEvent) => void;
+  title: string;
+  children: React.ReactNode;
+};
+
+function ToolbarButton({ active, onMouseDown, title, children }: ToolbarButtonProps) {
+  return (
+    <button
+      type="button"
+      onMouseDown={onMouseDown}
+      title={title}
+      className="w-7 h-7 flex items-center justify-center transition-colors"
+      style={{
+        background: active ? "#F5C518" : "transparent",
+        color: active ? "#1a1a1a" : "#6b6259",
+        border: "none",
+        borderRadius: 4,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 type Recipe = {
   id: string;
@@ -38,6 +65,7 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
       Placeholder.configure({
         placeholder:
           "Start writing your recipe — ingredients, steps, notes, anything…",
@@ -47,6 +75,22 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     onUpdate: ({ editor }) => {
       scheduleSave({ content: editor.getJSON() });
     },
+  });
+
+  const activeState = useEditorState({
+    editor,
+    selector: ({ editor: e }) => ({
+      bold: e?.isActive("bold") ?? false,
+      italic: e?.isActive("italic") ?? false,
+      underline: e?.isActive("underline") ?? false,
+      strike: e?.isActive("strike") ?? false,
+      h1: e?.isActive("heading", { level: 1 }) ?? false,
+      h2: e?.isActive("heading", { level: 2 }) ?? false,
+      h3: e?.isActive("heading", { level: 3 }) ?? false,
+      paragraph: e?.isActive("paragraph") ?? false,
+      bulletList: e?.isActive("bulletList") ?? false,
+      orderedList: e?.isActive("orderedList") ?? false,
+    }),
   });
 
   // Reset editor when recipe changes
@@ -105,6 +149,88 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
           style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}
         />
       </div>
+
+      {/* Toolbar */}
+      {editor && (
+        <div className="px-10 py-1.5 border-b border-[var(--panel-border)] flex items-center gap-0.5 flex-wrap">
+          <ToolbarButton
+            active={activeState?.bold ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleBold().run(); }}
+            title="Bold"
+          >
+            <span className="text-[13px] font-black leading-none">B</span>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.italic ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleItalic().run(); }}
+            title="Italic"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.underline ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleUnderline().run(); }}
+            title="Underline"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.strike ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleStrike().run(); }}
+            title="Strikethrough"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="4" y1="12" x2="20" y2="12"/><path d="M17.5 6.5C17.5 4.57 15.43 3 12 3c-3.31 0-5.5 1.57-5.5 4 0 1.5.9 2.7 2.5 3.5"/><path d="M6.5 17.5C6.5 19.43 8.57 21 12 21c3.31 0 5.5-1.57 5.5-4 0-1.3-.7-2.4-2-3.1"/></svg>
+          </ToolbarButton>
+
+          <div className="w-px h-4 bg-[#e0d9d0] mx-1" />
+
+          <ToolbarButton
+            active={activeState?.h1 ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 1 }).run(); }}
+            title="Heading 1"
+          >
+            <span className="text-[11px] font-bold leading-none">H1</span>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.h2 ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 2 }).run(); }}
+            title="Heading 2"
+          >
+            <span className="text-[11px] font-bold leading-none">H2</span>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.h3 ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 3 }).run(); }}
+            title="Heading 3"
+          >
+            <span className="text-[11px] font-bold leading-none">H3</span>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.paragraph ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().setParagraph().run(); }}
+            title="Paragraph"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M13 4a5 5 0 0 1 0 10H11v6H9V4h4zm0 8a3 3 0 0 0 0-6h-2v6h2z"/></svg>
+          </ToolbarButton>
+
+          <div className="w-px h-4 bg-[#e0d9d0] mx-1" />
+
+          <ToolbarButton
+            active={activeState?.bulletList ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleBulletList().run(); }}
+            title="Bullet List"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </ToolbarButton>
+          <ToolbarButton
+            active={activeState?.orderedList ?? false}
+            onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleOrderedList().run(); }}
+            title="Ordered List"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="1" y="8" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">1.</text><text x="1" y="14" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">2.</text><text x="1" y="20" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">3.</text></svg>
+          </ToolbarButton>
+        </div>
+      )}
 
       {/* Editor */}
       <div className="flex-1 overflow-y-auto px-10 py-6">
