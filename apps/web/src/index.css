@@ -116,3 +116,11 @@ body {
   padding: 0;
   color: inherit;
 }
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 0.6rem 0;
+  display: block;
+}

@@ -1,5 +1,6 @@
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
+import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -62,10 +63,23 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     }),
   );
 
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+  function handleImageFile(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      editor?.chain().focus().setImage({ src }).run();
+    };
+    reader.readAsDataURL(file);
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
+      Image.configure({ inline: false }),
       Placeholder.configure({
         placeholder:
           "Start writing your recipe — ingredients, steps, notes, anything…",
@@ -228,6 +242,27 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
             title="Ordered List"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="1" y="8" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">1.</text><text x="1" y="14" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">2.</text><text x="1" y="20" fontSize="7" fill="currentColor" stroke="none" fontWeight="bold">3.</text></svg>
+          </ToolbarButton>
+
+          <div className="w-px h-4 bg-[#e0d9d0] mx-1" />
+
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleImageFile(file);
+              e.target.value = "";
+            }}
+          />
+          <ToolbarButton
+            active={false}
+            onMouseDown={(e) => { e.preventDefault(); imageInputRef.current?.click(); }}
+            title="Insert Image"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
           </ToolbarButton>
         </div>
       )}

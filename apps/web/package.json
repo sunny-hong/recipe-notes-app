@@ -18,6 +18,7 @@
     "@recipe-notes-app/ui": "workspace:*",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-query": "^5.90.12",
+    "@tiptap/extension-image": "^3.22.0",
     "@tiptap/extension-placeholder": "^3.20.6",
     "@tiptap/extension-underline": "^3.21.0",
     "@tiptap/pm": "^3.20.6",
