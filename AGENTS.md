@@ -76,7 +76,7 @@ Shared (flag before editing):
 Each agent must update their section before closing a session:
 
 ### Agent_Mobile Status:
-- Completed:
+- Completed: Mobile layout for dashboard (< 768px) — hidden sidebar, breadcrumb Top bar 2 (< / Home / Recipe Notes / title / Sign out), fixed fade-in list overlay (ease-in-out opacity transition) with search, new recipe, and delete. Most-recently-opened note stays highlighted. Desktop layout unchanged. Merged to main via `feature/agent-mobile`.
 - In Progress:
 - Blockers:
 
