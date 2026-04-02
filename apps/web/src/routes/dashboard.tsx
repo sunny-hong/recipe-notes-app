@@ -324,8 +324,8 @@ export default function Notes() {
 
       {/* Change 5: Mobile list overlay — fixed, slides in from left, no route change */}
       <div
-        className={`md:hidden fixed inset-0 z-50 flex flex-col transition-transform duration-200 ease-in-out ${
-          listOpen ? "translate-x-0" : "-translate-x-full"
+        className={`md:hidden fixed inset-0 z-50 flex flex-col transition-opacity duration-200 ease-in-out ${
+          listOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         style={{ background: "var(--panel-bg)" }}
       >
