@@ -81,7 +81,7 @@ Each agent must update their section before closing a session:
 - Blockers:
 
 ### Agent_Photo Status:
-- Completed:
+- Completed: Resizable images in the Notes editor — click an image to select it, then drag the yellow handle (bottom-right corner) to resize. Width is stored as a `width` attribute (px) on the image node and persists across saves.
 - In Progress:
 - Blockers:
 

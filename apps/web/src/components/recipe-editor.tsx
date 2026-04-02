@@ -1,13 +1,105 @@
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import Image from "@tiptap/extension-image";
-import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
+import { EditorContent, useEditor, useEditorState, ReactNodeViewRenderer, NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { trpc } from "@/utils/trpc";
+
+function ResizableImageNodeView({ node, updateAttributes, selected }: NodeViewProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { src, alt, title, width } = node.attrs as {
+    src: string;
+    alt?: string;
+    title?: string;
+    width?: number | null;
+  };
+
+  function startResize(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startWidth = containerRef.current?.offsetWidth ?? 400;
+
+    function onMouseMove(e: MouseEvent) {
+      const newWidth = Math.max(80, startWidth + (e.clientX - startX));
+      updateAttributes({ width: newWidth });
+    }
+    function onMouseUp() {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    }
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  }
+
+  return (
+    <NodeViewWrapper>
+      <div
+        ref={containerRef}
+        style={{
+          display: "inline-block",
+          position: "relative",
+          width: width ? `${width}px` : "100%",
+          maxWidth: "100%",
+        }}
+      >
+        <img
+          src={src}
+          alt={alt ?? ""}
+          title={title ?? undefined}
+          style={{ display: "block", width: "100%", height: "auto" }}
+          draggable={false}
+        />
+        {selected && (
+          <div
+            onMouseDown={startResize}
+            title="Drag to resize"
+            style={{
+              position: "absolute",
+              bottom: 4,
+              right: 4,
+              width: 14,
+              height: 14,
+              background: "#F5C518",
+              border: "2px solid white",
+              borderRadius: 3,
+              cursor: "se-resize",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+              zIndex: 10,
+            }}
+          />
+        )}
+      </div>
+    </NodeViewWrapper>
+  );
+}
+
+const ResizableImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      width: {
+        default: null,
+        parseHTML: (el) => {
+          const w = el.style.width || el.getAttribute("width");
+          if (!w) return null;
+          return parseInt(w, 10) || null;
+        },
+        renderHTML: (attrs) => {
+          if (!attrs.width) return {};
+          return { style: `width: ${attrs.width}px; max-width: 100%` };
+        },
+      },
+    };
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ResizableImageNodeView);
+  },
+});
 
 type ToolbarButtonProps = {
   active: boolean;
@@ -79,7 +171,7 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     extensions: [
       StarterKit,
       Underline,
-      Image.configure({ inline: false }),
+      ResizableImage.configure({ inline: false }),
       Placeholder.configure({
         placeholder:
           "Start writing your recipe — ingredients, steps, notes, anything…",
