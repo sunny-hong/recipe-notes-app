@@ -1,0 +1,2 @@
+[test]
+preload = ["./packages/api/src/test/env-preload.ts", "./packages/api/src/test/setup.ts"]

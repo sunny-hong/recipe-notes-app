@@ -37,7 +37,8 @@
     "db:generate": "bun run --filter @recipe-notes-app/db db:generate",
     "db:migrate": "bun run --filter @recipe-notes-app/db db:migrate",
     "deploy": "bun run --filter @recipe-notes-app/infra deploy",
-    "destroy": "bun run --filter @recipe-notes-app/infra destroy"
+    "destroy": "bun run --filter @recipe-notes-app/infra destroy",
+    "test": "bun test packages/api/src/test"
   },
   "dependencies": {
     "@recipe-notes-app/env": "workspace:*",

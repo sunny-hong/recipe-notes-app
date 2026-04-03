@@ -9,7 +9,9 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "test": "bun test --env-file .env.test src/test"
+  },
   "dependencies": {
     "@recipe-notes-app/auth": "workspace:*",
     "@recipe-notes-app/db": "workspace:*",
