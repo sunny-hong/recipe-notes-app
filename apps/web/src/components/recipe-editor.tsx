@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { trpc } from "@/utils/trpc";
+import { validateImageFile, getResizeDimensions } from "@/utils/image";
 
 function ResizableImageNodeView({ node, updateAttributes, selected }: NodeViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,9 +159,9 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   function handleImageFile(file: File) {
-    if (!file.type.startsWith("image/")) return;
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Image must be under 10 MB");
+    const error = validateImageFile(file);
+    if (error) {
+      toast.error(error);
       return;
     }
     const reader = new FileReader();
@@ -168,17 +169,7 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
       const dataUrl = e.target?.result as string;
       const img = new window.Image();
       img.onload = () => {
-        const MAX = 1400;
-        let { width, height } = img;
-        if (width > MAX || height > MAX) {
-          if (width >= height) {
-            height = Math.round((height / width) * MAX);
-            width = MAX;
-          } else {
-            width = Math.round((width / height) * MAX);
-            height = MAX;
-          }
-        }
+        const { width, height } = getResizeDimensions(img.width, img.height);
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
