@@ -161,8 +161,28 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = (e) => {
-      const src = e.target?.result as string;
-      editor?.chain().focus().setImage({ src }).run();
+      const dataUrl = e.target?.result as string;
+      const img = new window.Image();
+      img.onload = () => {
+        const MAX = 1400;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          if (width >= height) {
+            height = Math.round((height / width) * MAX);
+            width = MAX;
+          } else {
+            width = Math.round((width / height) * MAX);
+            height = MAX;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+        const src = canvas.toDataURL("image/jpeg", 0.85);
+        editor?.chain().focus().setImage({ src }).run();
+      };
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   }
