@@ -159,6 +159,10 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
 
   function handleImageFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be under 10 MB");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
