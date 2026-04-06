@@ -40,6 +40,10 @@ lerna-debug.log*
 # Better-T-Stack
 .alchemy
 
+# Supabase local state
+supabase/.branches
+supabase/.temp
+
 # Testing
 coverage
 .nyc_output
