@@ -104,3 +104,8 @@ recipe-notes-app/
 - `bun run db:generate`: Generate database client/types
 - `bun run db:migrate`: Run database migrations
 - `bun run db:studio`: Open database studio UI
+
+
+## Miscellaneous 
+- `npx supabase stop`: Cleanly shut down Supabase containers before shutting down the laptop. start upon turning on the laptop.
+-
