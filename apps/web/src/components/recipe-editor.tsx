@@ -146,6 +146,9 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   const [title, setTitle] = useState(recipe.title);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSyncing = useRef(false);
+  const latestTitle = useRef(recipe.title);
+  const latestContent = useRef<object>(recipe.content as object);
+  const prevRecipeId = useRef(recipe.id);
 
   const updateMutation = useMutation(
     trpc.recipe.update.mutationOptions({
@@ -194,7 +197,9 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     ],
     content: recipe.content as object,
     onUpdate: ({ editor }) => {
-      scheduleSave({ content: editor.getJSON() });
+      const content = editor.getJSON();
+      latestContent.current = content;
+      scheduleSave({ content });
     },
   });
 
@@ -214,13 +219,41 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     }),
   });
 
-  // Reset editor when recipe changes
+  // Flush any pending save for the previous recipe, then reset editor
   useEffect(() => {
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+      saveTimeout.current = null;
+      updateMutation.mutate({
+        id: prevRecipeId.current,
+        title: latestTitle.current,
+        content: latestContent.current,
+        syncToDrive: false,
+      });
+    }
+    prevRecipeId.current = recipe.id;
+    latestTitle.current = recipe.title;
+    latestContent.current = recipe.content as object;
     if (editor && recipe.id) {
       editor.commands.setContent(recipe.content as object);
     }
     setTitle(recipe.title);
   }, [recipe.id]);
+
+  // Flush pending save on unmount (e.g. navigating away from dashboard)
+  useEffect(() => {
+    return () => {
+      if (saveTimeout.current) {
+        clearTimeout(saveTimeout.current);
+        updateMutation.mutate({
+          id: prevRecipeId.current,
+          title: latestTitle.current,
+          content: latestContent.current,
+          syncToDrive: false,
+        });
+      }
+    };
+  }, []);
 
   function scheduleSave(partial: { title?: string; content?: object }) {
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
@@ -236,6 +269,7 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
     setTitle(val);
+    latestTitle.current = val;
     scheduleSave({ title: val });
   }
 
