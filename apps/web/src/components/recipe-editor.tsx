@@ -164,6 +164,7 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState(recipe.title);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSave = useRef<{ title?: string; content?: object }>({});
   const isSyncing = useRef(false);
 
   const updateMutation = useMutation(
@@ -251,11 +252,14 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   }, [recipe.id]);
 
   function scheduleSave(partial: { title?: string; content?: object }) {
+    pendingSave.current = { ...pendingSave.current, ...partial };
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
+      const changes = pendingSave.current;
+      pendingSave.current = {};
       updateMutation.mutate({
         id: recipe.id,
-        ...partial,
+        ...changes,
         syncToDrive: false,
       });
     }, 1200);
