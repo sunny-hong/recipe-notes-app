@@ -149,8 +149,14 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
 
   const updateMutation = useMutation(
     trpc.recipe.update.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (updatedRecipe) => {
         queryClient.invalidateQueries(trpc.recipe.list.queryOptions());
+        // Keep the individual recipe cache current so switching back never
+        // shows stale (empty) content while a background refetch runs.
+        queryClient.setQueryData(
+          trpc.recipe.get.queryOptions({ id: updatedRecipe.id }).queryKey,
+          updatedRecipe,
+        );
       },
       onError: (err) => toast.error(err.message),
     }),
