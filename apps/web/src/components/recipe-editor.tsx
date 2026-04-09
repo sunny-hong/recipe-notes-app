@@ -10,6 +10,12 @@ import { toast } from "sonner";
 import { trpc } from "@/utils/trpc";
 import { validateImageFile, getResizeDimensions } from "@/utils/image";
 
+/**
+ * Tiptap node view that renders an image inside the editor with a drag-to-resize
+ * handle in the bottom-right corner. When the image is selected, the yellow handle
+ * appears; dragging it horizontally updates the stored `width` attribute so the
+ * size persists when the document is saved and reloaded.
+ */
 function ResizableImageNodeView({ node, updateAttributes, selected }: NodeViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { src, alt, title, width } = node.attrs as {
@@ -102,6 +108,12 @@ const ResizableImage = Image.extend({
   },
 });
 
+/**
+ * A single icon button in the formatting toolbar. Uses `onMouseDown` instead of
+ * `onClick` so the editor doesn't lose focus before the formatting command runs.
+ * Highlights with a yellow background when the cursor is inside the matching
+ * format (e.g. bold text), indicated by the `active` prop.
+ */
 type ToolbarButtonProps = {
   active: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
@@ -141,6 +153,13 @@ type Props = {
   hasGoogleAccount: boolean;
 };
 
+/**
+ * Full-page editor for a single recipe. Renders a title input, a rich-text
+ * toolbar, and a Tiptap editor body. Changes are auto-saved to the server with
+ * a 1200ms debounce — the save fires 1.2 seconds after the user stops typing.
+ * The sidebar recipe list and the individual recipe cache are both kept in sync
+ * after each successful save so navigating away and back shows fresh content.
+ */
 export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState(recipe.title);
@@ -149,8 +168,14 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
 
   const updateMutation = useMutation(
     trpc.recipe.update.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (updatedRecipe) => {
         queryClient.invalidateQueries(trpc.recipe.list.queryOptions());
+        // Keep the individual recipe cache current so switching back never
+        // shows stale (empty) content while a background refetch runs.
+        queryClient.setQueryData(
+          trpc.recipe.get.queryOptions({ id: updatedRecipe.id }).queryKey,
+          updatedRecipe,
+        );
       },
       onError: (err) => toast.error(err.message),
     }),
@@ -158,6 +183,9 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
 
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Validates the chosen file, resizes it to fit within the max dimensions,
+  // converts it to a JPEG data URL, and inserts it into the editor at the
+  // current cursor position.
   function handleImageFile(file: File) {
     const error = validateImageFile(file);
     if (error) {
