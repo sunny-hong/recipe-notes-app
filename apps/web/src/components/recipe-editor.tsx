@@ -236,6 +236,12 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
     setTitle(val);
+    // Optimistically update the sidebar list so the title reflects immediately
+    queryClient.setQueryData(
+      trpc.recipe.list.queryOptions().queryKey,
+      (old: { id: string; title: string; updatedAt: Date }[] | undefined) =>
+        old?.map((r) => (r.id === recipe.id ? { ...r, title: val } : r)),
+    );
     scheduleSave({ title: val });
   }
 
