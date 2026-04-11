@@ -20,7 +20,7 @@ export default function Login() {
         await authClient.signIn.email(
           { email, password },
           {
-            onSuccess: () => navigate("/dashboard"),
+            onSuccess: () => navigate("/"),
             onError: (err) =>
               toast.error(err.error.message || err.error.statusText),
           },
@@ -29,7 +29,7 @@ export default function Login() {
         await authClient.signUp.email(
           { email, password, name },
           {
-            onSuccess: () => navigate("/dashboard"),
+            onSuccess: () => navigate("/"),
             onError: (err) =>
               toast.error(err.error.message || err.error.statusText),
           },
@@ -42,7 +42,7 @@ export default function Login() {
 
   async function handleGoogleSignIn() {
     await authClient.signIn.social(
-      { provider: "google", callbackURL: `${window.location.origin}/dashboard` },
+      { provider: "google", callbackURL: `${window.location.origin}/` },
       { onError: (err) => toast.error(err.error.message) },
     );
   }
