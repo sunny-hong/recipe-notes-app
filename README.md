@@ -1,10 +1,8 @@
 # recipe-notes-app
 
 ## Who this is for 
-Recipe Notes App is a note-taking app for the sourdough-and-scratch-cooking generation — the millennials who accumulated a decade's worth of loose recipe cards, handwritten tweaks, and "what if I added cilantro to this?" margin notes between 2020 and 2029.
-The core of the app is simple: open it, type, done. No friction, no folders, no fluff. It's built for capturing recipes and creative cooking ideas the moment inspiration strikes. The second part of the app is an AI-powered recipe generator — a tool for creating international fusion recipe, or based on a creative idea user has.
+It's a notes app for recipes, with the added feature of having a recipe generator. 
 This is a small, intentional app. Fewer than 10 users at a time, built for trust and simplicity over scale.
-
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, React Router, Hono, TRPC, and more.
 
@@ -114,4 +112,3 @@ recipe-notes-app/
 
 ## Miscellaneous 
 - `npx supabase stop`: Cleanly shut down Supabase containers before shutting down the laptop. start upon turning on the laptop.
--
