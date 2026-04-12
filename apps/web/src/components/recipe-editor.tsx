@@ -259,10 +259,12 @@ export default function RecipeEditor({ recipe, hasGoogleAccount }: Props) {
     }),
   });
 
-  // Reset editor when recipe changes
+  // Reset editor when recipe changes.
+  // Pass `false` to suppress the onUpdate event so switching recipes doesn't
+  // trigger an auto-save, which would bump updatedAt and reorder the list.
   useEffect(() => {
     if (editor && recipe.id) {
-      editor.commands.setContent(recipe.content as object);
+      editor.commands.setContent(recipe.content as object, false);
     }
     setTitle(recipe.title);
   }, [recipe.id]);

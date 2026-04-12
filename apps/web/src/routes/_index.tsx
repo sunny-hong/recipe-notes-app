@@ -402,7 +402,7 @@ export default function Notes() {
           </button>
         </div>
 
-        {/* Recipe list — selected recipe highlighted (most recently opened) */}
+        {/* Recipe list — selected recipe highlighted (last edited) */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <p className="text-xs text-center text-[#b0a898] mt-8">Loading…</p>
