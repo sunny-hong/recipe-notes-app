@@ -1,24 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { trpc } from "@/utils/trpc";
+import { Link } from "react-router";
 
 import type { Route } from "./+types/dashboard";
-
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -28,27 +10,66 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const healthCheck = useQuery(trpc.healthCheck.queryOptions());
-
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-sm text-muted-foreground">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
-          </div>
-        </section>
+    <div
+      className="h-screen flex items-center justify-center"
+      style={{
+        background: "linear-gradient(to bottom, #5DB5FC, #ABC4FF, #63CBFF)",
+      }}
+    >
+      <div className="flex gap-8">
+        {/* Notes */}
+        <Link
+          to="/"
+          className="flex items-center justify-center"
+          style={{
+            width: 180,
+            height: 180,
+            borderRadius: 7,
+            background: "#E6B55A",
+            border: "2px solid #574420",
+            textDecoration: "none",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "Helvetica, Arial, sans-serif",
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              color: "#574420",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Notes
+          </span>
+        </Link>
+
+        {/* Recipe Generator */}
+        <button
+          className="flex items-center justify-center"
+          style={{
+            width: 180,
+            height: 180,
+            borderRadius: 7,
+            background: "#7BC46E",
+            border: "2px solid #3C7332",
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "Helvetica, Arial, sans-serif",
+              fontSize: 18,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              color: "#3C7332",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Recipe Generator
+          </span>
+        </button>
       </div>
     </div>
   );
