@@ -99,50 +99,6 @@ export default function Notes() {
       className="h-screen flex flex-col overflow-hidden"
       style={{ background: "#fafaf5" }}
     >
-      {/* Change 2: Desktop-only top header */}
-      <header
-        className="hidden md:flex items-center justify-between px-5 py-3 flex-shrink-0"
-        style={{ background: "var(--header-bg)", color: "#fff" }}
-      >
-        <div className="flex items-center gap-4">
-          {/* Back button — greyed out, home page doesn't exist yet */}
-          <button
-            disabled
-            className="flex items-center gap-1 text-sm opacity-30 cursor-not-allowed"
-            title="Home (coming soon)"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Home
-          </button>
-
-          <span
-            className="font-bold text-base tracking-tight"
-            style={{ color: "var(--brand-yellow)" }}
-          >
-            Recipe Notes
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <span className="text-xs opacity-50">{session?.user.name}</span>
-          <button
-            onClick={() => authClient.signOut({ fetchOptions: { onSuccess: () => navigate("/login") } })}
-            className="text-xs opacity-60 hover:opacity-100 transition-opacity"
-          >
-            Sign out
-          </button>
-        </div>
-      </header>
-
       {/* Change 3: Mobile-only Top bar 2 — breadcrumb with back button */}
       <div
         className="md:hidden flex items-center gap-1.5 px-3 py-2.5 flex-shrink-0 border-b text-sm"
